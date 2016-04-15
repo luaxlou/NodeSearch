@@ -1,0 +1,17 @@
+{
+  "name": "node-search-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "commander": "^2.9.0",
+    "mongoose": "^4.4.11",
+    "rss-parser": "^2.2.4",
+    "schedule": "^0.1.0"
+  }
+}
