@@ -10,6 +10,9 @@
   "license": "MIT",
   "devDependencies": {
     "commander": "^2.9.0",
+    "koa": "^1.2.0",
+    "koa-jsonp": "^0.2.0",
+    "md5": "^2.1.0",
     "mongoose": "^4.4.11",
     "rss-parser": "^2.2.4",
     "schedule": "^0.1.0"

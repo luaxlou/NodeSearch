@@ -14,7 +14,7 @@ var channels = channelModel.find().exec(function(err, channels) {
 		var feedUrl = channel.feedUrl;
 
 
-		every('10s').do(function() {
+		every('10m').do(function() {
 			fetchRss(feedUrl);
 		});
 

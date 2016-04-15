@@ -4,6 +4,7 @@ var channelSchema = new mongoose.Schema({
 	title: String,
 	link: String,
 	feedUrl: String,
+	hash: String,
 	description: String,
 	lastPubDate: Date
 });
@@ -17,6 +18,9 @@ var itemSchema = new mongoose.Schema({
 	description: String,
 	categories: Array,
 	link: String,
+	hash: String,
+	feedHash: String,
+	feedTitle: String,
 	pubDate: Date,
 	site: String,
 	updateAt: {
