@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const SERVER_HOST = 'http://' + window.location.hostname + ':3002';
 
 
 var $ = require("./jquery-2.2.3.min.js");
@@ -45,7 +46,7 @@ class ItemList extends React.Component {
 
   initTags() {
     $.ajax({
-      url: 'http://localhost:3002/tags',
+      url: SERVER_HOST + '/tags',
       dataType: 'jsonp',
       cache: false,
       success: function(tags) {
@@ -73,7 +74,7 @@ class ItemList extends React.Component {
     //   items: []
     // });
     $.ajax({
-      url: 'http://localhost:3002/search',
+      url: SERVER_HOST + '/search',
       dataType: 'jsonp',
       data: options,
       cache: false,

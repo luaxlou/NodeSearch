@@ -64,6 +64,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var SERVER_HOST = 'http://' + window.location.hostname + ':3002';
+
 	var $ = __webpack_require__(159);
 
 	var ItemList = function (_React$Component) {
@@ -112,7 +114,7 @@
 	    key: 'initTags',
 	    value: function initTags() {
 	      $.ajax({
-	        url: 'http://localhost:3002/tags',
+	        url: SERVER_HOST + '/tags',
 	        dataType: 'jsonp',
 	        cache: false,
 	        success: function (tags) {
@@ -142,7 +144,7 @@
 	      //   items: []
 	      // });
 	      $.ajax({
-	        url: 'http://localhost:3002/search',
+	        url: SERVER_HOST + '/search',
 	        dataType: 'jsonp',
 	        data: options,
 	        cache: false,
