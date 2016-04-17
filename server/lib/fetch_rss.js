@@ -1,59 +1,50 @@
 var filter = require('./node_filter');
 var models = require('../models');
-var parser = require('rss-parser');
+var parser = require('parse-rss');
+
+var summaryTool = require('node-summary');
 var md5 = require('md5');
 
 var itemModel = models.item;
 
-module.exports = function(feedUrl) {
+module.exports = function(channel) {
 
-	parser.parseURL(feedUrl, function(err, parsed) {
-
-		var feedTitle = parsed.feed.title;
-		console.log('fetching ['+feedTitle+']' + feedUrl);
-
-		parsed.feed.entries.forEach(function(entry) {
-
-			var title = entry.title;
-			var link = entry.link;
- 
-				var description = entry.contentSnippet
-		 
-
-			var categories = entry.categories;
-
-			var content = entry.content;
-			var pubDate = entry.pubDate;
+	var feedUrl = channel.feedUrl;
+	console.log('fetching [' + channel.title + ']' + feedUrl);
+	parser(feedUrl,
+		function(err, parsed) {
+			if (parsed) {
 
 
+				parsed.forEach(function(entry) {
 
-			if (filter(title) || filter(categories)) {
+					if (filter(entry.title) || filter(entry.categories)) {;
 
-				itemModel.findOne({
-					'hash': md5(link)
-				}).exec(function(err, item) {
-					if (err) return handleError(err);
-				
-					if (item == null) {
+						for (var i = 0; i < entry.categories.length; i++) {
+							entry.categories[i] = entry.categories[i].toLowerCase();
+						}
+
 						var aItem = new itemModel({
-							title: title,
-							link: link,
-							hash: md5(link),
-							feedHash : md5(feedUrl),
-							feedTitle : feedTitle,
-							description: description,
-							categories: categories,
-							content: content,
-							pubDate: pubDate
+							title: entry.title,
+							author: entry.author,
+							link: entry.link,
+							hash: md5(entry.link),
+							feedHash: md5(channel.feedUrl),
+							feedTitle: channel.title,
+							description: entry.description,
+							summary: entry.summary,
+							categories: entry.categories,
+							pubDate: entry.pubDate
 						});
-						aItem.save();
-						console.log('saved new item:' + title);
-					}
 
+
+						aItem.addUnique(channel);
+
+
+
+					}
 
 				});
 			}
-
 		});
-	});
 }

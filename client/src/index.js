@@ -1,75 +1,163 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+
+
 var $ = require("./jquery-2.2.3.min.js");
 
 
-class Item extends React.Component {
-  render() {
-    return (
-      <div className="item"> 
-          <h3><a href={this.props.link} target="_blank">{this.props.item.title}</a></h3>
-          <i>{this.props.item.feedTitle} {this.props.item.pubDate}</i>
-          <div>{this.props.item.description}</div>
-      </div>
-    );
-  }
-}
 
 class ItemList extends React.Component {
 
- constructor(props) {
+  constructor(props) {
     super(props);
+    this.handleTagClick = this.handleTagClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.state = {items: []};
-  }
-  
-    componentDidMount() {
-      this.search('node');
+    this.state = {
+      items: [],
+      tags: [],
+      tips: ''
+    };
   }
 
-  handleSubmit(e)
-  { 
+  componentDidMount() {
+    this.search();
+    this.initTags();
+  }
+
+  handleSubmit(e) {
     e.preventDefault();
-    console.log(this);
-     this.search(this.refs.keywords)
+
+    this.search(this.refs.keywords)
     return;
- 
+
   }
 
+  handleTagClick(e) {
+    e.preventDefault();
+    console.log($(e.target).html());
+    this.search({
+      tag: $(e.target).html()
+    })
+    return;
 
-  search(){
-      $.ajax({
-      url:  this.props.url,
+  }
+
+  initTags() {
+    $.ajax({
+      url: 'http://localhost:3002/tags',
       dataType: 'jsonp',
       cache: false,
-      success: function(items) {
-        this.setState({items: items});
-       }.bind(this),
+      success: function(tags) {
+        this.setState({
+          tags: tags
+        });
+      }.bind(this),
       error: function(xhr, status, err) {
-       console.error(this.props.url, status, err.toString());
+        console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
   }
 
 
-	render() {
+  search(options = {}) {
 
-    var itemNodes = this.state.items.map(function (item) {
+    this.setState({
+      tips: 'flashing...'
+    });
+
+    $.extend({
+      tag: ''
+    }, options);
+    // this.setState({
+    //   items: []
+    // });
+    $.ajax({
+      url: 'http://localhost:3002/search',
+      dataType: 'jsonp',
+      data: options,
+      cache: false,
+      beforeSend: function() {
+
+      },
+      success: function(items) {
+        this.setState({
+          items: items
+        });
+
+        this.setState({
+          tips: ''
+        });
+
+
+      }.bind(this),
+      error: function(xhr, status, err) {
+
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  }
+
+
+  render() {
+
+    var _this = this;
+
+
+    var tagNodes = this.state.tags.map(function(tag) {
+
       return (
-        <Item item={item}>
-        </Item>
+
+        <a className = "tag"  onClick = {_this.handleTagClick}>{tag.title}</a>
+
       );
     });
-    return ( 
+
+
+    var itemNodes = this.state.items.map(function(item) {
+      return (
+        <div className="article"> 
+            <div className="article-inner">
+            <header className="article-header">
+                
+               <div className="article-header-left">
+               <h1><a className="article-title" href={item.link} target="_blank">{item.title}</a></h1>
+                     <div className="article-meta">[{item.feedTitle}] {item.pubDate}</div>
+                </div>
+                <div className="article-header-right">
+                  <h1><a className="article-title" href={item.link} target="_blank"> > </a></h1>
+                    
+                    </div>
+            </header>
+            <div className="article-entry">
+                
+                <div dangerouslySetInnerHTML={{__html:item.description}}></div>
+            </div>
+        
+               <footer className="article-footer">
+                    <div className="tags">{tagNodes}</div>
+               </footer>
+            </div>
+      </div>
+      );
+    });
+
+
+
+    return (
       <div className="itemList">
-         <form className="commentForm" onSubmit={this.handleSubmit}>
-            <input type="text" placeholder="node" ref="keywords"/> 
-        <input type="submit" value="search" />
-      </form> 
+      <div id="header">
+    <div className="tags">
+         <a className="tag filter-all"  onClick ={this.handleTagClick} >all</a>
+         {tagNodes} <span  className="tips">{this.state.tips}</span></div>
+         
+      </div>
+     
         {itemNodes}
+    
       </div>
     );
   }
 }
 
-ReactDOM.render(<ItemList url="http://localhost:3002/" />, document.getElementById('react'));
+ReactDOM.render(<ItemList />, document.getElementById('react'));

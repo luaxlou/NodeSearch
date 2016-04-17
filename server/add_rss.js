@@ -10,16 +10,16 @@ program
 	.action(function(feedUrl) {
 
 		channelModel.findOne({
-				'hash': md5(feedUrl)
-			}).exec(function(err, channel) {
+			'hash': md5(feedUrl)
+		}).exec(function(err, channel) {
 
 
-				if (err) return handleError(err);
+			if (err) return handleError(err);
 
-				
-				if (channel == null) {
 
-					parser.parseURL(feedUrl, function(err, parsed) {
+			if (channel == null) {
+
+				parser.parseURL(feedUrl, function(err, parsed) {
 
 
 					var title = parsed.feed.title;
@@ -35,15 +35,15 @@ program
 						.save(function(err) {
 							if (err) return handleError(err);
 							console.log('saved new fedd:' + parsed.feed.title);
-										process.exit();
+							process.exit();
 						});
-							});
-				} else {
-					console.log('feed is already saved');
-					console.log(channel);
-								process.exit();		
+				});
+			} else {
+				console.log('feed is already saved');
+				console.log(channel);
+				process.exit();
 
-							}
+			}
 
 			// parsed.feed.entries.forEach(function(entry) {
 			// 	console.log(entry.title + ':' + entry.link);

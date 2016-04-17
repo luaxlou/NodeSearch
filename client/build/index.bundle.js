@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/a010/play/NodeSearch/client/src";
+/******/ 	__webpack_require__.p = "/Users/johnlou/play/NodeSearch/client/src";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -66,86 +66,98 @@
 
 	var $ = __webpack_require__(159);
 
-	var Item = function (_React$Component) {
-	  _inherits(Item, _React$Component);
-
-	  function Item() {
-	    _classCallCheck(this, Item);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Item).apply(this, arguments));
-	  }
-
-	  _createClass(Item, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'item' },
-	        _react2.default.createElement(
-	          'h3',
-	          null,
-	          _react2.default.createElement(
-	            'a',
-	            { href: this.props.link, target: '_blank' },
-	            this.props.item.title
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'i',
-	          null,
-	          this.props.item.feedTitle,
-	          ' ',
-	          this.props.item.pubDate
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          null,
-	          this.props.item.description
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Item;
-	}(_react2.default.Component);
-
-	var ItemList = function (_React$Component2) {
-	  _inherits(ItemList, _React$Component2);
+	var ItemList = function (_React$Component) {
+	  _inherits(ItemList, _React$Component);
 
 	  function ItemList(props) {
 	    _classCallCheck(this, ItemList);
 
 	    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(ItemList).call(this, props));
 
+	    _this2.handleTagClick = _this2.handleTagClick.bind(_this2);
 	    _this2.handleSubmit = _this2.handleSubmit.bind(_this2);
-	    _this2.state = { items: [] };
+	    _this2.state = {
+	      items: [],
+	      tags: [],
+	      tips: ''
+	    };
 	    return _this2;
 	  }
 
 	  _createClass(ItemList, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.search('node');
+	      this.search();
+	      this.initTags();
 	    }
 	  }, {
 	    key: 'handleSubmit',
 	    value: function handleSubmit(e) {
 	      e.preventDefault();
-	      console.log(this);
+
 	      this.search(this.refs.keywords);
 	      return;
 	    }
 	  }, {
-	    key: 'search',
-	    value: function search() {
+	    key: 'handleTagClick',
+	    value: function handleTagClick(e) {
+	      e.preventDefault();
+	      console.log($(e.target).html());
+	      this.search({
+	        tag: $(e.target).html()
+	      });
+	      return;
+	    }
+	  }, {
+	    key: 'initTags',
+	    value: function initTags() {
 	      $.ajax({
-	        url: this.props.url,
+	        url: 'http://localhost:3002/tags',
 	        dataType: 'jsonp',
 	        cache: false,
-	        success: function (items) {
-	          this.setState({ items: items });
+	        success: function (tags) {
+	          this.setState({
+	            tags: tags
+	          });
 	        }.bind(this),
 	        error: function (xhr, status, err) {
+	          console.error(this.props.url, status, err.toString());
+	        }.bind(this)
+	      });
+	    }
+	  }, {
+	    key: 'search',
+	    value: function search() {
+	      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+
+	      this.setState({
+	        tips: 'flashing...'
+	      });
+
+	      $.extend({
+	        tag: ''
+	      }, options);
+	      // this.setState({
+	      //   items: []
+	      // });
+	      $.ajax({
+	        url: 'http://localhost:3002/search',
+	        dataType: 'jsonp',
+	        data: options,
+	        cache: false,
+	        beforeSend: function beforeSend() {},
+	        success: function (items) {
+	          this.setState({
+	            items: items
+	          });
+
+	          this.setState({
+	            tips: ''
+	          });
+	        }.bind(this),
+	        error: function (xhr, status, err) {
+
 	          console.error(this.props.url, status, err.toString());
 	        }.bind(this)
 	      });
@@ -154,17 +166,102 @@
 	    key: 'render',
 	    value: function render() {
 
-	      var itemNodes = this.state.items.map(function (item) {
-	        return _react2.default.createElement(Item, { item: item });
+	      var _this = this;
+
+	      var tagNodes = this.state.tags.map(function (tag) {
+
+	        return _react2.default.createElement(
+	          'a',
+	          { className: 'tag', onClick: _this.handleTagClick },
+	          tag.title
+	        );
 	      });
+
+	      var itemNodes = this.state.items.map(function (item) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'article' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'article-inner' },
+	            _react2.default.createElement(
+	              'header',
+	              { className: 'article-header' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'article-header-left' },
+	                _react2.default.createElement(
+	                  'h1',
+	                  null,
+	                  _react2.default.createElement(
+	                    'a',
+	                    { className: 'article-title', href: item.link, target: '_blank' },
+	                    item.title
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  'div',
+	                  { className: 'article-meta' },
+	                  '[',
+	                  item.feedTitle,
+	                  '] ',
+	                  item.pubDate
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'article-header-right' },
+	                _react2.default.createElement(
+	                  'h1',
+	                  null,
+	                  _react2.default.createElement(
+	                    'a',
+	                    { className: 'article-title', href: item.link, target: '_blank' },
+	                    ' > '
+	                  )
+	                )
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'article-entry' },
+	              _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: item.description } })
+	            ),
+	            _react2.default.createElement(
+	              'footer',
+	              { className: 'article-footer' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'tags' },
+	                tagNodes
+	              )
+	            )
+	          )
+	        );
+	      });
+
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'itemList' },
 	        _react2.default.createElement(
-	          'form',
-	          { className: 'commentForm', onSubmit: this.handleSubmit },
-	          _react2.default.createElement('input', { type: 'text', placeholder: 'node', ref: 'keywords' }),
-	          _react2.default.createElement('input', { type: 'submit', value: 'search' })
+	          'div',
+	          { id: 'header' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'tags' },
+	            _react2.default.createElement(
+	              'a',
+	              { className: 'tag filter-all', onClick: this.handleTagClick },
+	              'all'
+	            ),
+	            tagNodes,
+	            ' ',
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'tips' },
+	              this.state.tips
+	            )
+	          )
 	        ),
 	        itemNodes
 	      );
@@ -174,7 +271,7 @@
 	  return ItemList;
 	}(_react2.default.Component);
 
-	_reactDom2.default.render(_react2.default.createElement(ItemList, { url: 'http://localhost:3002/' }), document.getElementById('react'));
+	_reactDom2.default.render(_react2.default.createElement(ItemList, null), document.getElementById('react'));
 
 /***/ },
 /* 1 */

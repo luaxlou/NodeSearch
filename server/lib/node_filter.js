@@ -1,4 +1,4 @@
-var keywords = 'node|npm|nodejs|javascript|react';
+var keywords = 'node|npm|nodejs|javascript|react|es6|es2015|jsx';
 
 
 module.exports = function(str) {
@@ -10,6 +10,7 @@ module.exports = function(str) {
 		s = str.join(',');
 
 	}
+
 
 
 	return (s.search(new RegExp(keywords, 'i')) >= 0)
