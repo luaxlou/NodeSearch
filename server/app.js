@@ -1,16 +1,15 @@
 var koa = require('koa');
 var jsonp = require('koa-jsonp');
 var router = require('koa-router')();
- 
+
 var models = require('./models');
 var app = koa();
-
- 
 
 
 
 var itemModel = models.item;
 var tagModel = models.tag;
+var authModel = models.auth;
 
 
 
@@ -21,9 +20,18 @@ var tagModel = models.tag;
 
 app.use(jsonp());
 
-router.get('/search', function *(next) {
+
+router.get('/auth', function*(next) {
+
+	authModel.sendAuth();
+	this.body = 'send ok'
 
 
+});
+
+router.get('/search', function*(next) {
+
+	authModel.sendAuth();
 	var items = yield itemModel.search(this.request.query);
 
 	this.body = items;
@@ -31,44 +39,47 @@ router.get('/search', function *(next) {
 
 });
 
-router.get('/tags',function*() {
+router.get('/tags', function*() {
 
-	var tags = yield tagModel.topTags( );
+	var tags = yield tagModel.topTags();
 	this.body = tags;
 });
 
-router.get('/alltags',function*() {
- 
+router.get('/alltags', function*() {
 
-	var tags = yield tagModel.find({},{title:1,rank:1}).sort({rank:-1}).exec( );
+
+	var tags = yield tagModel.find({}, {
+		title: 1,
+		rank: 1
+	}).sort({
+		rank: -1
+	}).exec();
 
 	var html = '';
 
 
-	for(var i in tags)
-	{
+	for (var i in tags) {
 
 		var t = tags[i];
-		html +=" <p><a href='/tagrank?tag="+t.title+"'>"+(t.title)+"</a></p>"
+		html += " <p><a href='/tagrank?tag=" + t.title + "'>" + (t.title) + "</a></p>"
 	}
 	this.body = html;
 });
 
-router.get('/tagrank',function*() {
+router.get('/tagrank', function*() {
 
 	var tag = this.request.query.tag;
- 	 tagModel.rankTag(tag);
+	tagModel.rankTag(tag);
 
 
-	var tags = yield tagModel.topTags( );
+	var tags = yield tagModel.topTags();
 	this.body = tags;
 });
- 
+
 app
-  .use(router.routes())
-  .use(router.allowedMethods());
- 
- 
+	.use(router.routes())
+	.use(router.allowedMethods());
+
 
 
 app.listen(3002);

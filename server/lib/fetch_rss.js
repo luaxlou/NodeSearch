@@ -2,7 +2,7 @@ var filter = require('./node_filter');
 var models = require('../models');
 var parser = require('parse-rss');
 
- var md5 = require('md5');
+var md5 = require('md5');
 
 var itemModel = models.item;
 
@@ -29,7 +29,7 @@ module.exports = function(channel) {
 							link: entry.link,
 							feedHash: md5(channel.feedUrl),
 							feedTitle: channel.title,
-							description: entry.description,
+							// description: entry.description,
 							summary: entry.summary,
 							categories: entry.categories,
 							pubDate: entry.pubDate

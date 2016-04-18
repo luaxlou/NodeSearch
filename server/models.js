@@ -1,7 +1,44 @@
 var mongoose = require('mongoose');
 var md5 = require('md5');
+var redis = require("redis");
+
+var sendmail = require('sendmail')();
+
+var redisClient = redis.createClient();
+
+
+
+function rand() {
+	var text = "";
+	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	for (var i = 0; i < 32; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+	return text;
+}
+
+redisClient.on("error", function(err) {
+	console.log("Error " + err);
+});
 
 mongoose.set('debug', true);
+
+module.exports.auth = {
+	sendAuth: function() {
+		var authKey = rand();
+		redisClient.set('authKey', authKey);
+		redisClient.expire('authKey', 300);
+
+		sendmail({
+			from: 'luax@luaxlou.com',
+			to: 'luax@qq.com',
+			subject: 'node search authKey',
+			content: 'hello john! node search authKey is:' + authKey,
+		}, function(err, reply) {
+			console.log(err && err.stack);
+			console.dir(reply);
+		});
+
+	}
+}
 
 
 var channelSchema = new mongoose.Schema({
@@ -9,8 +46,10 @@ var channelSchema = new mongoose.Schema({
 	link: String,
 	feedUrl: String,
 	hash: {
-		type:String,
-		index:{unique:true}
+		type: String,
+		index: {
+			unique: true
+		}
 	},
 	description: String,
 	lastPubDate: Date
@@ -35,12 +74,14 @@ var itemSchema = new mongoose.Schema({
 	title: String,
 	author: String,
 	summary: String,
-	description: String,
+	// description: String,
 	categories: Array,
 	link: String,
 	hash: {
-		type:String,
-		index:{unique:true}
+		type: String,
+		index: {
+			unique: true
+		}
 	},
 	feedHash: String,
 	feedTitle: String,
@@ -66,7 +107,9 @@ itemSchema.statics.search = function(filter, cb) {
 	}
 
 
-	return itemModel.find(query).sort({updateAt:-1}).exec();
+	return itemModel.find(query).sort({
+		updateAt: -1
+	}).exec();
 }
 
 itemSchema.methods.addUnique = function(channel, cb) {
@@ -77,14 +120,14 @@ itemSchema.methods.addUnique = function(channel, cb) {
 
 	var tagModel = this.model('tag');
 
- 
+
 	this.hash = md5(this.title);
 	this.save().then(function(item) {
-				console.log('saved new item:' + (item.title));
+		console.log('saved new item:' + (item.title));
 
-				channel.updateLastPubDate(item.pubDate);
-				tagModel.addUnique(item.categories);
-	 });
+		channel.updateLastPubDate(item.pubDate);
+		tagModel.addUnique(item.categories);
+	});
 
 
 
@@ -95,12 +138,16 @@ module.exports.item = mongoose.model('item', itemSchema);
 
 var tagSchema = new mongoose.Schema({
 	title: String,
-	hash:{
-		type:String,
-		index:{unique:true}
+	hash: {
+		type: String,
+		index: {
+			unique: true
+		}
 	},
-	rank:Number
+	rank: Number
 });
+
+
 
 tagSchema.statics.addUnique = function(tags, cb) {
 
@@ -109,51 +156,55 @@ tagSchema.statics.addUnique = function(tags, cb) {
 	tags.forEach(function(title) {
 
 		title = title.toLowerCase();
-  
 
-				var tag = new tagModel({
-					title: title,
-					hash:md5(title)
-				});
 
-				tag.save().then(function(t) {
-					console.log('saved new tag:' + (t.title));
+		var tag = new tagModel({
+			title: title,
+			hash: md5(title)
+		});
 
-				});
-  
+		tag.save().then(function(t) {
+			console.log('saved new tag:' + (t.title));
+
+		});
+
 	});
 }
 
 
 
-tagSchema.statics.topTags = function*( cb) {
+tagSchema.statics.topTags = function*(cb) {
 
- 	var tagModel = this.model('tag');
- 	return tagModel.find({},{title:1,rank:1}).sort({rank:-1}).limit(20).exec( );
- 	
+	var tagModel = this.model('tag');
+	return tagModel.find({}, {
+		title: 1,
+		rank: 1
+	}).sort({
+		rank: -1
+	}).limit(20).exec();
+
 }
 
 tagSchema.statics.rankTag = function(tag, cb) {
 
 	var tagModel = this.model('tag');
 
- 
-	 var hash = md5(tag.toLowerCase());
-  	tagModel.findOne({hash:hash}).exec(function(err,t){
-   		if(t!=null)
-  		{
-  			if(typeof t.rank == 'undefined')
-  			{
-  				t.rank =0;
-  			}else
-  			{
-  				t.rank = t.rank +1;
-  			}
-  			t.save() ;
-  		}
 
-  	});
- 	
+	var hash = md5(tag.toLowerCase());
+	tagModel.findOne({
+		hash: hash
+	}).exec(function(err, t) {
+		if (t != null) {
+			if (typeof t.rank == 'undefined') {
+				t.rank = 0;
+			} else {
+				t.rank = t.rank + 1;
+			}
+			t.save();
+		}
+
+	});
+
 }
 
 module.exports.tag = mongoose.model('tag', tagSchema);
