@@ -2,8 +2,7 @@ var filter = require('./node_filter');
 var models = require('../models');
 var parser = require('parse-rss');
 
-var summaryTool = require('node-summary');
-var md5 = require('md5');
+ var md5 = require('md5');
 
 var itemModel = models.item;
 

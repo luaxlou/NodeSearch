@@ -115,7 +115,23 @@ class ItemList extends React.Component {
     });
 
 
+
+
     var itemNodes = this.state.items.map(function(item) {
+
+
+
+     var itemTagNodes = item.categories.map(function(tagTitle) {
+
+      return (
+
+        <a className = "tag"  onClick = {_this.handleTagClick}>{tagTitle}</a>
+
+      );
+    });
+
+
+
       return (
         <div className="article"> 
             <div className="article-inner">
@@ -136,7 +152,7 @@ class ItemList extends React.Component {
             </div>
         
                <footer className="article-footer">
-                    <div className="tags">{tagNodes}</div>
+                    <div className="tags">{itemTagNodes}</div>
                </footer>
             </div>
       </div>

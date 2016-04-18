@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/Users/johnlou/play/NodeSearch/client/src";
+/******/ 	__webpack_require__.p = "/Users/a010/play/NodeSearch/client/src";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -180,6 +180,16 @@
 	      });
 
 	      var itemNodes = this.state.items.map(function (item) {
+
+	        var itemTagNodes = item.categories.map(function (tagTitle) {
+
+	          return _react2.default.createElement(
+	            'a',
+	            { className: 'tag', onClick: _this.handleTagClick },
+	            tagTitle
+	          );
+	        });
+
 	        return _react2.default.createElement(
 	          'div',
 	          { className: 'article' },
@@ -235,7 +245,7 @@
 	              _react2.default.createElement(
 	                'div',
 	                { className: 'tags' },
-	                tagNodes
+	                itemTagNodes
 	              )
 	            )
 	          )

@@ -8,7 +8,10 @@ var channelSchema = new mongoose.Schema({
 	title: String,
 	link: String,
 	feedUrl: String,
-	hash: String,
+	hash: {
+		type:String,
+		index:{unique:true}
+	},
 	description: String,
 	lastPubDate: Date
 });
@@ -35,7 +38,10 @@ var itemSchema = new mongoose.Schema({
 	description: String,
 	categories: Array,
 	link: String,
-	hash: String,
+	hash: {
+		type:String,
+		index:{unique:true}
+	},
 	feedHash: String,
 	feedTitle: String,
 	pubDate: Date,
@@ -71,34 +77,15 @@ itemSchema.methods.addUnique = function(channel, cb) {
 
 	var tagModel = this.model('tag');
 
-	var _this = this;
-
-
-
-	itemModel.findOne({
-		'hash': md5(this.title)
-	}).exec(function(err, item) {
-		if (err) return handleError(err);
-
-		if (item == null) {
-
-			_this.hash = md5(this.title);
-			_this.save().then(function(item) {
+ 
+	this.hash = md5(this.title);
+	this.save().then(function(item) {
 				console.log('saved new item:' + (item.title));
 
 				channel.updateLastPubDate(item.pubDate);
 				tagModel.addUnique(item.categories);
-			});
+	 });
 
-
-
-		} else {
-
-
-		}
-
-
-	});
 
 
 }
@@ -108,7 +95,10 @@ module.exports.item = mongoose.model('item', itemSchema);
 
 var tagSchema = new mongoose.Schema({
 	title: String,
-	hash:String
+	hash:{
+		type:String,
+		index:{unique:true}
+	}
 });
 
 tagSchema.statics.addUnique = function(tags, cb) {
@@ -118,34 +108,18 @@ tagSchema.statics.addUnique = function(tags, cb) {
 	tags.forEach(function(title) {
 
 		title = title.toLowerCase();
+  
 
-
-		tagModel.findOne({
-			'hash': md5(title)
-		}).exec(function(err, tag) {
-			if (err) return handleError(err);
-
-			if (tag == null) {
-
-				tag = new tagModel({
+				var tag = new tagModel({
 					title: title,
 					hash:md5(title)
 				});
 
-				tag.save().then(function(tag) {
-					console.log('saved new tag:' + (tag.title));
+				tag.save().then(function(t) {
+					console.log('saved new tag:' + (t.title));
 
 				});
-
-
-
-			} else {
-
-
-			}
-
-
-		});
+  
 	});
 }
 

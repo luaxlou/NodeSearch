@@ -34,7 +34,7 @@ program
 						})
 						.save(function(err) {
 							if (err) return handleError(err);
-							console.log('saved new fedd:' + parsed.feed.title);
+							console.log('saved new feed:' + parsed.feed.title);
 							process.exit();
 						});
 				});
