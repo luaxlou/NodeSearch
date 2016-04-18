@@ -76,12 +76,13 @@ itemSchema.methods.addUnique = function(channel, cb) {
 
 
 	itemModel.findOne({
-		'hash': md5(this.link)
+		'hash': md5(this.title)
 	}).exec(function(err, item) {
 		if (err) return handleError(err);
 
 		if (item == null) {
 
+			_this.hash = md5(this.title);
 			_this.save().then(function(item) {
 				console.log('saved new item:' + (item.title));
 

@@ -28,7 +28,6 @@ module.exports = function(channel) {
 							title: entry.title,
 							author: entry.author,
 							link: entry.link,
-							hash: md5(entry.link),
 							feedHash: md5(channel.feedUrl),
 							feedTitle: channel.title,
 							description: entry.description,
