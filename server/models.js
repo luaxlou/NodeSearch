@@ -98,7 +98,8 @@ var tagSchema = new mongoose.Schema({
 	hash:{
 		type:String,
 		index:{unique:true}
-	}
+	},
+	rank:Number
 });
 
 tagSchema.statics.addUnique = function(tags, cb) {
@@ -121,6 +122,38 @@ tagSchema.statics.addUnique = function(tags, cb) {
 				});
   
 	});
+}
+
+
+
+tagSchema.statics.topTags = function*( cb) {
+
+ 	var tagModel = this.model('tag');
+ 	return tagModel.find({},{title:1,rank:1}).sort({rank:-1}).limit(20).exec( );
+ 	
+}
+
+tagSchema.statics.rankTag = function(tag, cb) {
+
+	var tagModel = this.model('tag');
+
+ 
+	 var hash = md5(tag.toLowerCase());
+  	tagModel.findOne({hash:hash}).exec(function(err,t){
+   		if(t!=null)
+  		{
+  			if(typeof t.rank == 'undefined')
+  			{
+  				t.rank =0;
+  			}else
+  			{
+  				t.rank = t.rank +1;
+  			}
+  			t.save() ;
+  		}
+
+  	});
+ 	
 }
 
 module.exports.tag = mongoose.model('tag', tagSchema);
