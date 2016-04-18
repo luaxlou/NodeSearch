@@ -147,7 +147,6 @@ class ItemList extends React.Component {
                     </div>
             </header>
             <div className="article-entry">
-                
                 <div dangerouslySetInnerHTML={{__html:item.description}}></div>
             </div>
         
