@@ -27,7 +27,7 @@ module.exports.auth = {
 		redisClient.set('authKey', authKey);
 		redisClient.expire('authKey', 300);
 
-		var adminUrl = "http://" + host + '/admin?authKey=' + authKey;
+		var adminUrl = "http://" + host + '/admin?auth=' + authKey;
 
 
 		var adminUrl =
@@ -36,7 +36,7 @@ module.exports.auth = {
 				from: 'luax@luaxlou.com',
 				to: 'luax@qq.com',
 				subject: 'node search authKey',
-				content: 'hello john! node search admin url is:<a href="' + adminUrl + '">admin</a>',
+				content: 'hello john! node search admin url is:' + adminUrl,
 			}, function(err, reply) {
 				console.log(err && err.stack);
 				console.dir(reply);
