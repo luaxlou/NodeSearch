@@ -35,7 +35,24 @@ router.get('/tags',function*() {
 
 	var tags = yield tagModel.topTags( );
 	this.body = tags;
-})
+});
+
+router.get('/alltags',function*() {
+ 
+
+	var tags = yield tagModel.find({},{title:1,rank:1}).sort({rank:-1}).exec( );
+
+	var html = '';
+
+
+	for(var i in tags)
+	{
+
+		var t = tags[i];
+		html +=" <p><a href='/tagrank?tag="+t.title+"'>"+(t.title)+"</a></p>"
+	}
+	this.body = html;
+});
 
 router.get('/tagrank',function*() {
 
@@ -45,7 +62,7 @@ router.get('/tagrank',function*() {
 
 	var tags = yield tagModel.topTags( );
 	this.body = tags;
-})
+});
  
 app
   .use(router.routes())
