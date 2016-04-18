@@ -60,7 +60,7 @@ itemSchema.statics.search = function(filter, cb) {
 	}
 
 
-	return itemModel.find(query).exec();
+	return itemModel.find(query).sort({updateAt,-1}).exec();
 }
 
 itemSchema.methods.addUnique = function(channel, cb) {
@@ -106,7 +106,8 @@ module.exports.item = mongoose.model('item', itemSchema);
 
 
 var tagSchema = new mongoose.Schema({
-	title: String
+	title: String,
+	hash:String
 });
 
 tagSchema.statics.addUnique = function(tags, cb) {
@@ -119,14 +120,15 @@ tagSchema.statics.addUnique = function(tags, cb) {
 
 
 		tagModel.findOne({
-			'title': title
+			'hash': md5(title)
 		}).exec(function(err, tag) {
 			if (err) return handleError(err);
 
 			if (tag == null) {
 
 				tag = new tagModel({
-					title: title
+					title: title,
+					hash:md5(title)
 				});
 
 				tag.save().then(function(tag) {
