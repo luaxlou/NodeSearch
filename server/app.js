@@ -23,7 +23,9 @@ app.use(jsonp());
 
 router.get('/auth', function*(next) {
 
-	authModel.sendAuth();
+	var host = this.request.host;
+
+	authModel.sendAuth(host);
 	this.body = 'send ok'
 
 
@@ -31,7 +33,6 @@ router.get('/auth', function*(next) {
 
 router.get('/search', function*(next) {
 
-	authModel.sendAuth();
 	var items = yield itemModel.search(this.request.query);
 
 	this.body = items;
@@ -45,7 +46,15 @@ router.get('/tags', function*() {
 	this.body = tags;
 });
 
-router.get('/alltags', function*() {
+router.get('/admin', function*() {
+
+	var authKey = this.request.query.auth;
+
+
+	if (!authModel.auth(authKey)) {
+		this.body = 'auth failed'
+		return;
+	}
 
 
 	var tags = yield tagModel.find({}, {
@@ -57,16 +66,27 @@ router.get('/alltags', function*() {
 
 	var html = '';
 
+	html += "<p><a onclick='return confirm('delete?');' href='/clean?auth=" + authKey + "'>clean</a>";
+
 
 	for (var i in tags) {
 
 		var t = tags[i];
-		html += " <p><a href='/tagrank?tag=" + t.title + "'>" + (t.title) + "</a></p>"
+		html += " <p><a href='/tagrank?tag=" + t.title + "&auth=" + authKey + "'>" + (t.title) + "</a></p>"
 	}
 	this.body = html;
 });
 
 router.get('/tagrank', function*() {
+
+
+	var authKey = this.request.query.auth;
+
+
+	if (!authModel.auth(authKey)) {
+		this.body = 'auth failed'
+		return;
+	}
 
 	var tag = this.request.query.tag;
 	tagModel.rankTag(tag);
@@ -74,6 +94,24 @@ router.get('/tagrank', function*() {
 
 	var tags = yield tagModel.topTags();
 	this.body = tags;
+});
+
+
+router.get('/clean', function*() {
+
+
+	var authKey = this.request.query.auth;
+
+
+	if (!authModel.auth(authKey)) {
+		this.body = 'auth failed'
+		return;
+	}
+
+	itemModel.remove({}).exec();
+	tagModel.remove({}).exec();
+
+	this.body = 'success';
 });
 
 app

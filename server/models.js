@@ -22,20 +22,36 @@ redisClient.on("error", function(err) {
 mongoose.set('debug', true);
 
 module.exports.auth = {
-	sendAuth: function() {
+	sendAuth: function(host) {
 		var authKey = rand();
 		redisClient.set('authKey', authKey);
 		redisClient.expire('authKey', 300);
 
-		sendmail({
-			from: 'luax@luaxlou.com',
-			to: 'luax@qq.com',
-			subject: 'node search authKey',
-			content: 'hello john! node search authKey is:' + authKey,
-		}, function(err, reply) {
-			console.log(err && err.stack);
-			console.dir(reply);
-		});
+		var adminUrl = "http://" + host + '/admin?authKey=' + authKey;
+
+
+		var adminUrl =
+
+			sendmail({
+				from: 'luax@luaxlou.com',
+				to: 'luax@qq.com',
+				subject: 'node search authKey',
+				content: 'hello john! node search admin url is:<a href="' + adminUrl + '">admin</a>',
+			}, function(err, reply) {
+				console.log(err && err.stack);
+				console.dir(reply);
+			});
+
+	},
+	auth: function(authKey) {
+
+		var authKeyF = redisClient.get('authKey');
+
+		if (authKey == authKeyF) {
+			return true;
+		} else {
+			return false;
+		}
 
 	}
 }
