@@ -60,7 +60,7 @@ itemSchema.statics.search = function(filter, cb) {
 	}
 
 
-	return itemModel.find(query).sort({updateAt,-1}).exec();
+	return itemModel.find(query).sort({updateAt:-1}).exec();
 }
 
 itemSchema.methods.addUnique = function(channel, cb) {
