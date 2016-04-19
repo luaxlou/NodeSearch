@@ -47,6 +47,10 @@ module.exports.auth = {
 
 		var authKeyF = redisClient.get('authKey');
 
+		console.log(authKey);
+
+		console.log(authKeyF);
+
 		if (authKey == authKeyF) {
 			return true;
 		} else {
