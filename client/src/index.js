@@ -116,19 +116,18 @@ class ItemList extends React.Component {
 
 
 
-
     var itemNodes = this.state.items.map(function(item) {
 
 
 
-     var itemTagNodes = item.categories.map(function(tagTitle) {
+      var itemTagNodes = item.categories.map(function(tagTitle) {
 
-      return (
+        return (
 
-        <a className = "tag"  onClick = {_this.handleTagClick}>{tagTitle}</a>
+          <a className = "tag"  onClick = {_this.handleTagClick}>{tagTitle}</a>
 
-      );
-    });
+        );
+      });
 
 
 
@@ -146,13 +145,9 @@ class ItemList extends React.Component {
                     
                     </div>
             </header>
-            <div className="article-entry">
-                <div dangerouslySetInnerHTML={{__html:item.description}}></div>
-            </div>
-        
-               <footer className="article-footer">
-                    <div className="tags">{itemTagNodes}</div>
-               </footer>
+       
+      <div className="tags">{itemTagNodes}</div>
+           
             </div>
       </div>
       );
