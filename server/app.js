@@ -68,7 +68,7 @@ router.get('/admin', function*() {
 
 	var html = '';
 
-	html += "<p><a onclick='return confirm('delete?');' href='/clean?auth=" + authKey + "'>clean</a>";
+	html += "<p><a onclick=\"return confirm('delete?');\" href='/clean?auth=" + authKey + "'>clean</a>";
 
 
 	for (var i in tags) {
