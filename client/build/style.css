@@ -424,7 +424,7 @@ body {
  
   -webkit-flex: initial;
           flex: initial;
-  width: 500px;
+  min-width: 500px;
  }
  
 .article-header-right{
