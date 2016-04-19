@@ -236,8 +236,17 @@
 	            ),
 	            _react2.default.createElement(
 	              'div',
-	              { className: 'tags' },
-	              itemTagNodes
+	              { className: 'article-entry' },
+	              _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: item.description } })
+	            ),
+	            _react2.default.createElement(
+	              'footer',
+	              { className: 'article-footer' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'tags' },
+	                itemTagNodes
+	              )
 	            )
 	          )
 	        );

@@ -25,7 +25,7 @@ module.exports.auth = {
 	sendAuth: function(host) {
 		var authKey = rand();
 		redisClient.set('authKey', authKey);
-		redisClient.expire('authKey', 300);
+		redisClient.expire('authKey', 1800);
 
 		var adminUrl = "http://" + host + '/admin?auth=' + authKey;
 
@@ -102,7 +102,7 @@ var itemSchema = new mongoose.Schema({
 	title: String,
 	author: String,
 	summary: String,
-	// description: String,
+	description: String,
 	categories: Array,
 	link: String,
 	hash: {

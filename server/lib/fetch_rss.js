@@ -29,7 +29,7 @@ module.exports = function(channel) {
 							link: entry.link,
 							feedHash: md5(channel.feedUrl),
 							feedTitle: channel.title,
-							// description: entry.description,
+							description: entry.description,
 							summary: entry.summary,
 							categories: entry.categories,
 							pubDate: entry.pubDate
