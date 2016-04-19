@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var md5 = require('md5');
 var redis = require("redis");
-
+var Promise = require('promise');
 var sendmail = require('sendmail')();
 
 var redisClient = redis.createClient();
@@ -45,17 +45,25 @@ module.exports.auth = {
 	},
 	auth: function(authKey) {
 
-		var authKeyF = redisClient.get('authKey');
 
-		console.log(authKey);
+		var promise = new Promise(function(resolve, reject) {
+			redisClient.get('authKey', function(err, authKeyF) {
 
-		console.log(authKeyF);
 
-		if (authKey == authKeyF) {
-			return true;
-		} else {
-			return false;
-		}
+
+				if (err) {
+
+					reject(err)
+
+				} else {
+
+
+					resolve(authKey == authKeyF)
+				};
+			});
+		});
+
+		return promise;
 
 	}
 }

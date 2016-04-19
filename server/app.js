@@ -50,8 +50,10 @@ router.get('/admin', function*() {
 
 	var authKey = this.request.query.auth;
 
+	var r = yield authModel.auth(authKey);
 
-	if (!authModel.auth(authKey)) {
+	console.log(r);
+	if (!r) {
 		this.body = 'auth failed'
 		return;
 	}
