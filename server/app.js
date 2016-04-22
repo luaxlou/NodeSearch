@@ -1,3 +1,7 @@
+/**
+* @flow
+**/
+
 var koa = require('koa');
 var jsonp = require('koa-jsonp');
 var router = require('koa-router')();
@@ -120,8 +124,7 @@ router.get('/rankTag', function*() {
 	tagModel.rankTag(tag);
 
 
-	var tags = yield tagModel.topTags();
-	this.body = tags;
+		this.body = 'success';
 });
 
 
@@ -137,14 +140,13 @@ router.get('/hideTag', function*() {
 	}
 
 	var tag = this.request.query.tag;
-	tagModel.rankTag(tag);
+	tagModel.hideTag(tag);
 
 
-	var tags = yield tagModel.topTags();
-	this.body = tags;
+			this.body = 'success';
 });
 
-router.get('/channelItem', function*() {
+router.get('/showTag', function*() {
 
 
 	var authKey = this.request.query.auth;
@@ -156,11 +158,28 @@ router.get('/channelItem', function*() {
 	}
 
 	var tag = this.request.query.tag;
-	tagModel.rankTag(tag);
+	tagModel.showTag(tag);
 
 
-	var tags = yield tagModel.topTags();
-	this.body = tags;
+			this.body = 'success';
+});
+
+router.get('/removeChannel', function*() {
+
+
+	var authKey = this.request.query.auth;
+
+
+	if (!authModel.auth(authKey)) {
+		this.body = 'auth failed'
+		return;
+	}
+
+	var hash = this.request.query.hash;
+	tagModel.removeChannel(hash);
+
+
+			this.body = 'success';
 });
 
 
@@ -176,11 +195,10 @@ router.get('/removeItem', function*() {
 	}
 
 	var tag = this.request.query.tag;
-	tagModel.rankTag(tag);
+	tagModel.removeItem(tag);
 
+		this.body = 'success';
 
-	var tags = yield tagModel.topTags();
-	this.body = tags;
 });
 
 
