@@ -5,6 +5,8 @@
 var koa = require('koa');
 var jsonp = require('koa-jsonp');
 var router = require('koa-router')();
+var parser = require('rss-parser');
+var md5 = require('md5');
 
 var models = require('./models');
 var app = koa();
@@ -92,6 +94,12 @@ router.get('/admin', function*() {
 	}
 
 	html += "<h1>channels</h1>";
+	html += "<div><form method='post' action='/addFeed' >"+
+			+"<input type='hidden' name='auth' value='"+authKey+"' />"
+			+"<input type='text' name='feedUrl' value='' size=100 />"
+			+"<input type=\"submit\" value=\"add\" />"
+			+"</form></div>";
+
 
 	for (var i in channels) {
 
@@ -167,6 +175,61 @@ router.get('/showTag', function*() {
 
 	var tag = this.request.query.tag;
 	tagModel.showTag(tag);
+
+
+			this.body = 'success';
+});
+
+router.get('/addFeed', function*() {
+
+	var authKey = this.request.query.auth;
+
+
+	if (!authModel.auth(authKey)) {
+		this.body = 'auth failed'
+		return;
+	}
+
+
+	var feedUrl= this.request.query.feedUrl;
+
+
+	channelModel.findOne({
+		'hash': md5(feedUrl)
+	}).exec(function(err, channel) {
+
+
+		if (err) return handleError(err);
+
+
+		if (channel == null) {
+
+			parser.parseURL(feedUrl, function(err, parsed) {
+
+
+				var title = parsed.feed.title;
+				var link = parsed.feed.link;
+				var description = parsed.feed.description;
+				var channel = new channelModel({
+						'title': title,
+						'link': link,
+						'feedUrl': feedUrl,
+						'hash': md5(feedUrl),
+						'description': description
+					})
+					.save(function(err) {
+						if (err) return handleError(err);
+						console.log('saved new feed:' + parsed.feed.title);
+
+					});
+			});
+		} else {
+			console.log('feed is already saved');
+			console.log(channel);
+
+		}
+
+
 
 
 			this.body = 'success';
