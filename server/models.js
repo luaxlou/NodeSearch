@@ -58,8 +58,8 @@ module.exports.auth = {
 				} else {
 
 
-				//	resolve(authKey == authKeyF)
-					resolve(true)
+					resolve(authKey == authKeyF)
+					// resolve(true)
 				};
 			});
 		});
