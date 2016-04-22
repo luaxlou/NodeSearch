@@ -6,6 +6,8 @@ var koa = require('koa');
 var jsonp = require('koa-jsonp');
 var router = require('koa-router')();
 var parser = require('rss-parser');
+var bodyParser = require('koa-body')();
+
 var md5 = require('md5');
 
 var models = require('./models');
@@ -180,9 +182,10 @@ router.get('/showTag', function*() {
 			this.body = 'success';
 });
 
-router.post('/addFeed', function*() {
+router.post('/addFeed',bodyParser, function*() {
 
-	var authKey = this.request.query.auth;
+	var authKey = this.request.body.auth;
+
 
 
 	if (!authModel.auth(authKey)) {
@@ -190,8 +193,7 @@ router.post('/addFeed', function*() {
 		return;
 	}
 
-
-	var feedUrl= this.request.query.feedUrl;
+	var feedUrl= this.request.body.feedUrl.trim();
 
 
 	channelModel.findOne({

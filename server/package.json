@@ -23,5 +23,7 @@
     "schedule": "^0.1.0",
     "sendmail": "^0.2.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "koa-body": "^1.4.0"
+  }
 }
