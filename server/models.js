@@ -279,6 +279,24 @@ tagSchema.statics.hideTag = function(tag, cb) {
 
 }
 
+tagSchema.statics.showTag = function(tag, cb) {
+
+	var tagModel = this.model('tag');
+
+
+	var hash = md5(tag.toLowerCase());
+	tagModel.findOne({
+		hash: hash
+	}).exec(function(err, t) {
+		if (t != null) {
+			t.isShow =true;
+			t.save();
+		}
+
+	});
+
+}
+
 module.exports.tag = mongoose.model('tag', tagSchema);
 
 

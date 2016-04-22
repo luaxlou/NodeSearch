@@ -80,7 +80,8 @@ router.get('/admin', function*() {
 		var t = tags[i];
 		html += " <p>"+(t.title)
 		+"<a href='/rankTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>rank</a></p>"
-		+"<a href='/hideTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>hideTag</a></p>"
+		+"<a href='/hideTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>hide</a></p>"
+		+"<a href='/showTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>show</a></p>"
 
 	}
 
