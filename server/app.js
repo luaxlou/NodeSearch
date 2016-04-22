@@ -85,9 +85,9 @@ router.get('/admin', function*() {
 
 		var t = tags[i];
 		html += " <p>"+(t.title)
-		+"<a href='/rankTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>rank</a>"
-		+"<a href='/hideTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>hide</a>"
-		+"<a href='/showTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>show</a></p>"
+		+"<a href='/rankTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>rank</a> | "
+		+"<a href='/hideTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>hide</a> | "
+		+"<a href='/showTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>show</a> | </p>"
 
 	}
 
@@ -97,7 +97,7 @@ router.get('/admin', function*() {
 
 		var c = channels[i];
 		html += " <p> "+(c.title)+":<a href='"+(c.feedUrl)+"' target='_blank'>"+(c.feedUrl)+"</a>"
-		+" <a onclick=\"return confirm('remove?');\" href='/removeChannel?hash=" + (c.hash) + "&auth=" + authKey + "'>remove</a></p>"
+		+" | <a onclick=\"return confirm('remove?');\" href='/removeChannel?hash=" + (c.hash) + "&auth=" + authKey + "'>remove</a></p>"
 	}
 
 	html += "<h1>Items</h1>";
@@ -105,7 +105,7 @@ router.get('/admin', function*() {
 
 		var it = items[i]
 		html += " <p> "+(it.title)+":<a href='"+(it.link)+"' target='_blank'>"+(it.link)+"</a>"
-		+"<a onclick=\"return confirm('remove?');\" href='/removeItem?hash=" + it.hash + "&auth=" + authKey + "'  target='_blank'>remove</a></p>"
+		+" | <a onclick=\"return confirm('remove?');\" href='/removeItem?hash=" + it.hash + "&auth=" + authKey + "'  target='_blank'>remove</a></p>"
 	}
 
 
