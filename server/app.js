@@ -230,9 +230,9 @@ router.get('/addFeed', function*() {
 		}
 
 
+	});
 
-
-			this.body = 'success';
+	this.body = 'success';
 });
 
 router.get('/removeChannel', function*() {
