@@ -196,8 +196,8 @@ router.get('/removeItem', function*() {
 		return;
 	}
 
-	var tag = this.request.query.tag;
-	itemModel.removeItem(tag);
+	var hash = this.request.query.hash;
+	itemModel.removeItem(hash);
 
 		this.body = 'success';
 
