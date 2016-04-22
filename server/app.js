@@ -92,7 +92,7 @@ router.get('/admin', function*() {
 
 	for (var i in items) {
 
-		var it = channels[i]
+		var it = items[i]
 		html += " <p> "+(it.title)+":<a href='"+(it.link)+"' target='_blank'>"+(it.link)+"</a><a onclick=\"return confirm('delete?');\" href='/deleteItem?hash=" + it.hash + "&auth=" + authKey + "'>remove</a></p>"
 	}
 
