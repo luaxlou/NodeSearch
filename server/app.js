@@ -80,32 +80,38 @@ router.get('/admin', function*() {
 	var channels = yield channelModel.find({}).exec();
 
 	var html = '';
-
+	html += "<h1>Tags</h1>";
 	for (var i in tags) {
 
 		var t = tags[i];
 		html += " <p>"+(t.title)
-		+"<a href='/rankTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>rank</a></p>"
-		+"<a href='/hideTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>hide</a></p>"
+		+"<a href='/rankTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>rank</a>"
+		+"<a href='/hideTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>hide</a>"
 		+"<a href='/showTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>show</a></p>"
 
 	}
 
+	html += "<h1>channels</h1>";
+
 	for (var i in channels) {
 
 		var c = channels[i];
-		html += " <p> "+(c.title)+":<a href='"+(c.feedUrl)+"' target='_blank'>"+(c.feedUrl)+"</a> <a onclick=\"return confirm('remove?');\" href='/removeChannel?hash=" + (c.hash) + "&auth=" + authKey + "'>remove</a></p>"
+		html += " <p> "+(c.title)+":<a href='"+(c.feedUrl)+"' target='_blank'>"+(c.feedUrl)+"</a>"
+		+" <a onclick=\"return confirm('remove?');\" href='/removeChannel?hash=" + (c.hash) + "&auth=" + authKey + "'>remove</a></p>"
 	}
 
+	html += "<h1>Items</h1>";
 	for (var i in items) {
 
 		var it = items[i]
-		html += " <p> "+(it.title)+":<a href='"+(it.link)+"' target='_blank'>"+(it.link)+"</a> <a onclick=\"return confirm('remove?');\" href='/removeItem?hash=" + it.hash + "&auth=" + authKey + "'>remove</a></p>"
+		html += " <p> "+(it.title)+":<a href='"+(it.link)+"' target='_blank'>"+(it.link)+"</a>"
+		+"<a onclick=\"return confirm('remove?');\" href='/removeItem?hash=" + it.hash + "&auth=" + authKey + "'  target='_blank'>remove</a></p>"
 	}
 
 
+	html += "<h1 style='color:red;'>Dangerous!!!</h1>";
 
-	html += "<p><a onclick=\"return confirm('remove?');\" href='/clean?auth=" + authKey + "'>clean</a>";
+	html += "<p><a onclick=\"return confirm('remove?');\" href='/clean?auth=" + authKey + "'  target='_blank'>clean</a>";
 
 
 	this.body = html;
