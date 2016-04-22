@@ -94,7 +94,7 @@ router.get('/admin', function*() {
 	}
 
 	html += "<h1>channels</h1>";
-	html += "<div><form method='post' action='/addFeed' >"+
+	html += "<div><form method='post' action='/addFeed' >"
 			+"<input type='hidden' name='auth' value='"+authKey+"' />"
 			+"<input type='text' name='feedUrl' value='' size=100 />"
 			+"<input type=\"submit\" value=\"add\" />"
