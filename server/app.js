@@ -180,7 +180,7 @@ router.get('/showTag', function*() {
 			this.body = 'success';
 });
 
-router.get('/addFeed', function*() {
+router.post('/addFeed', function*() {
 
 	var authKey = this.request.query.auth;
 
