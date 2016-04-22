@@ -69,6 +69,9 @@ module.exports.auth = {
 }
 
 
+//----------------------------------------------------------
+//channelSchema
+
 var channelSchema = new mongoose.Schema({
 	title: String,
 	link: String,
@@ -84,20 +87,31 @@ var channelSchema = new mongoose.Schema({
 });
 
 channelSchema.methods.updateLastPubDate = function(pubDate, cb) {
-
-
 	if (!this.lastPubDate || this.lastPubDate < pubDate) {
 		this.lastPubDate = pubDate;
 		this.save();
 	}
 
+}
 
+channelSchema.statics.remove = function(hash,cb){
+	channelModel.findOne({
+		hash: hash
+	}).exec(function(err, t) {
+		if (t != null) {
 
+			t.remove();
+		}
+
+	});
 }
 
 
 module.exports.channel = mongoose.model('channel', channelSchema);
 
+
+//----------------------------------------------------------
+//itemSchema
 var itemSchema = new mongoose.Schema({
 	title: String,
 	author: String,
@@ -142,10 +156,7 @@ itemSchema.statics.search = function(filter, cb) {
 
 itemSchema.methods.addUnique = function(channel, cb) {
 
-
-
 	var itemModel = this.model('item');
-
 	var tagModel = this.model('tag');
 
 
@@ -157,12 +168,23 @@ itemSchema.methods.addUnique = function(channel, cb) {
 		tagModel.addUnique(item.categories);
 	});
 
+}
 
+itemSchema.statics.remove = function(hash,cb){
+	itemModel.findOne({
+		hash: hash
+	}).exec(function(err, t) {
+		if (t != null) {
 
+			t.remove();
+		}
+
+	});
 }
 
 module.exports.item = mongoose.model('item', itemSchema);
-
+//----------------------------------------------------------
+//tagSchema
 
 var tagSchema = new mongoose.Schema({
 	title: String,
@@ -172,9 +194,12 @@ var tagSchema = new mongoose.Schema({
 			unique: true
 		}
 	},
+	isShow:{
+		type:Boolean,
+		default:true
+	},
 	rank: Number
 });
-
 
 
 tagSchema.statics.addUnique = function(tags, cb) {
@@ -204,7 +229,7 @@ tagSchema.statics.addUnique = function(tags, cb) {
 tagSchema.statics.topTags = function*(cb) {
 
 	var tagModel = this.model('tag');
-	return tagModel.find({}, {
+	return tagModel.find({isShow:true}, {
 		title: 1,
 		rank: 1
 	}).sort({
@@ -228,6 +253,25 @@ tagSchema.statics.rankTag = function(tag, cb) {
 			} else {
 				t.rank = t.rank + 1;
 			}
+			t.save();
+		}
+
+	});
+
+}
+
+
+tagSchema.statics.hideTag = function(tag, cb) {
+
+	var tagModel = this.model('tag');
+
+
+	var hash = md5(tag.toLowerCase());
+	tagModel.findOne({
+		hash: hash
+	}).exec(function(err, t) {
+		if (t != null) {
+			t.isShow =false;
 			t.save();
 		}
 

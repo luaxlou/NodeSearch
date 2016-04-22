@@ -6,7 +6,7 @@ var models = require('./models');
 var app = koa();
 
 
-
+var channelModel = models.channel;
 var itemModel = models.item;
 var tagModel = models.tag;
 var authModel = models.auth;
@@ -66,20 +66,45 @@ router.get('/admin', function*() {
 		rank: -1
 	}).exec();
 
+
+	var items = yield itemModel.find({}).exec();
+
+
+
+	var channels = yield channelModel.find({}).exec();
+
 	var html = '';
-
-	html += "<p><a onclick=\"return confirm('delete?');\" href='/clean?auth=" + authKey + "'>clean</a>";
-
 
 	for (var i in tags) {
 
 		var t = tags[i];
-		html += " <p><a href='/tagrank?tag=" + t.title + "&auth=" + authKey + "'>" + (t.title) + "</a></p>"
+		html += " <p>"+(t.title)
+		+"<a href='/rankTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>rank</a></p>"
+		+"<a href='/hideTag?tag=" + t.title + "&auth=" + authKey + "'  target='_blank'>hideTag</a></p>"
+
 	}
+
+	for (var i in channels) {
+
+		var c = channels[i];
+		html += " <p> "+(c.title)+":<a href='"+(c.feedUrl)+"' target='_blank'>"+(c.feedUrl)+"</a><a onclick=\"return confirm('delete?');\" href='/deleteChannel?hash=" + t.hash + "&auth=" + authKey + "'>remove</a></p>"
+	}
+
+	for (var i in items) {
+
+		var it = channels[i]
+		html += " <p> "+(it.title)+":<a href='"+(it.link)+"' target='_blank'>"+(it.link)+"</a><a onclick=\"return confirm('delete?');\" href='/deleteItem?hash=" + it.hash + "&auth=" + authKey + "'>remove</a></p>"
+	}
+
+
+
+	html += "<p><a onclick=\"return confirm('delete?');\" href='/clean?auth=" + authKey + "'>clean</a>";
+
+
 	this.body = html;
 });
 
-router.get('/tagrank', function*() {
+router.get('/rankTag', function*() {
 
 
 	var authKey = this.request.query.auth;
@@ -97,6 +122,66 @@ router.get('/tagrank', function*() {
 	var tags = yield tagModel.topTags();
 	this.body = tags;
 });
+
+
+router.get('/hideTag', function*() {
+
+
+	var authKey = this.request.query.auth;
+
+
+	if (!authModel.auth(authKey)) {
+		this.body = 'auth failed'
+		return;
+	}
+
+	var tag = this.request.query.tag;
+	tagModel.rankTag(tag);
+
+
+	var tags = yield tagModel.topTags();
+	this.body = tags;
+});
+
+router.get('/channelItem', function*() {
+
+
+	var authKey = this.request.query.auth;
+
+
+	if (!authModel.auth(authKey)) {
+		this.body = 'auth failed'
+		return;
+	}
+
+	var tag = this.request.query.tag;
+	tagModel.rankTag(tag);
+
+
+	var tags = yield tagModel.topTags();
+	this.body = tags;
+});
+
+
+router.get('/removeItem', function*() {
+
+
+	var authKey = this.request.query.auth;
+
+
+	if (!authModel.auth(authKey)) {
+		this.body = 'auth failed'
+		return;
+	}
+
+	var tag = this.request.query.tag;
+	tagModel.rankTag(tag);
+
+
+	var tags = yield tagModel.topTags();
+	this.body = tags;
+});
+
 
 
 router.get('/clean', function*() {
