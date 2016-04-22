@@ -178,7 +178,7 @@ router.get('/removeChannel', function*() {
 	}
 
 	var hash = this.request.query.hash;
-	tagModel.removeChannel(hash);
+	channelModel.removeChannel(hash);
 
 
 			this.body = 'success';
@@ -197,7 +197,7 @@ router.get('/removeItem', function*() {
 	}
 
 	var tag = this.request.query.tag;
-	tagModel.removeItem(tag);
+	itemModel.removeItem(tag);
 
 		this.body = 'success';
 
