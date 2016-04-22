@@ -94,7 +94,7 @@ channelSchema.methods.updateLastPubDate = function(pubDate, cb) {
 
 }
 
-channelSchema.statics.remove = function(hash,cb){
+channelSchema.statics.removeChannel = function(hash,cb){
 	channelModel.findOne({
 		hash: hash
 	}).exec(function(err, t) {
@@ -170,7 +170,7 @@ itemSchema.methods.addUnique = function(channel, cb) {
 
 }
 
-itemSchema.statics.remove = function(hash,cb){
+itemSchema.statics.removeItem = function(hash,cb){
 	itemModel.findOne({
 		hash: hash
 	}).exec(function(err, t) {

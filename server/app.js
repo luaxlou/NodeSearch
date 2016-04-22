@@ -92,13 +92,13 @@ router.get('/admin', function*() {
 	for (var i in channels) {
 
 		var c = channels[i];
-		html += " <p> "+(c.title)+":<a href='"+(c.feedUrl)+"' target='_blank'>"+(c.feedUrl)+"</a><a onclick=\"return confirm('delete?');\" href='/deleteChannel?hash=" + t.hash + "&auth=" + authKey + "'>remove</a></p>"
+		html += " <p> "+(c.title)+":<a href='"+(c.feedUrl)+"' target='_blank'>"+(c.feedUrl)+"</a> <a onclick=\"return confirm('delete?');\" href='/deleteChannel?hash=" + (c.hash) + "&auth=" + authKey + "'>remove</a></p>"
 	}
 
 	for (var i in items) {
 
 		var it = items[i]
-		html += " <p> "+(it.title)+":<a href='"+(it.link)+"' target='_blank'>"+(it.link)+"</a><a onclick=\"return confirm('delete?');\" href='/deleteItem?hash=" + it.hash + "&auth=" + authKey + "'>remove</a></p>"
+		html += " <p> "+(it.title)+":<a href='"+(it.link)+"' target='_blank'>"+(it.link)+"</a> <a onclick=\"return confirm('delete?');\" href='/deleteItem?hash=" + it.hash + "&auth=" + authKey + "'>remove</a></p>"
 	}
 
 
