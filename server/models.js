@@ -65,6 +65,9 @@ module.exports.auth = {
 
 		return promise;
 
+	},
+	delayAuth:function(){
+		redisClient.expire('authKey', 1800);
 	}
 }
 

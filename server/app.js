@@ -62,6 +62,8 @@ router.get('/admin', function*() {
 		return;
 	}
 
+	authModel.delayAuth();
+
 
 	var tags = yield tagModel.find({}, {
 		title: 1,
