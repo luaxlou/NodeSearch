@@ -1,4 +1,4 @@
-var keywords = 'node|npm|nodejs|javascript|react|es6|es2015|jsx';
+var keywords = 'node|npm|javascript|react|es6|es2015|jsx|redux|webpack|nuclide|pm2|koa|express|gulp|babel|react-router|commander|jade|mocha|request|socket\.io';
 
 
 module.exports = function(str) {
